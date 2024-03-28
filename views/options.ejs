@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Option</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Add CSS for the loader */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.342);
+      z-index: 1000;
+      display: none;
+    }
+
+    .loader {     
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 4px solid white;
+      border-top: 4px solid #ef073de1;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col justify-center items-center">
+  <h1 class="text-3xl font-bold mb-8">Choose an Option</h1>
+  <div class="space-y-4">
+    <form id="summaryForm" action="/options/summarize-pdf" method="post" onsubmit="showLoader()">
+      <!-- Add a hidden input field to hold the PDF text -->
+      <input type="hidden" name="pdfText" id="pdfText" value="<%= pdfText %>">
+      <!-- Add loader -->
+      <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+        <span id="loader" class="hidden loader"></span> Get Summary
+      </button>
+    </form>
+      
+    <button onclick="redirectToPdf()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+      Interact with PDF
+    </button>
+  </div>
+
+  <!-- Add overlay -->
+  <div id="overlay" class="overlay"></div>
+
+  <script>
+    // Function to set the PDF text and submit the form
+    function submitSummaryForm(pdfText) {
+      // Set the PDF text in the hidden input field
+      document.getElementById('pdfText').value = pdfText;
+  
+      // Show loading overlay
+      let overlay = document.getElementById("overlay");
+      overlay.style.display = "block";
+  
+      // Submit the form
+      document.getElementById('summaryForm').submit();
+    }
+  
+    // Function to show loader when form is submitted
+    function showLoader() {
+      document.getElementById('overlay').style.display = "block";
+      document.getElementById('loader').classList.remove('hidden');
+    }
+
+    // Function to redirect to pdf-interaction route
+    function redirectToPdf() {
+      window.location.href = '/pdf-interaction';
+    }
+    
+  </script>
+  
+</body>
+</html>

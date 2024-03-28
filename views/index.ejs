@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Summarizer</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none;
+    }
+
+    .loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <h1 class="text-4xl text-center py-8 uppercase mt-12 sm:mt-36">PDF Summarizer</h1>
+  <div class="mx-auto max-w-sm bg-gray-300 rounded-lg overflow-hidden shadow-lg">
+    <div id="uploadArea" class="px-6 py-4">
+      <input type="file" name="pdfFile" id="pdfFile" class="hidden" onchange="handleFileChange(this)">
+      <button id="uploadButton" type="button" onclick="document.getElementById('pdfFile').click()" class="w-full mt-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-100">Upload</button>
+    </div>
+    <div id="overlay" class="overlay">
+      <div class="loader"></div>
+    </div>
+  </div>
+
+  <script>
+    function handleFileChange(input) {
+      let formData = new FormData();
+      let file = input.files[0];
+      formData.append('pdfFile', file);
+      let overlay = document.getElementById("overlay");
+  
+      // Show loading overlay
+      overlay.style.display = "block";
+  
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('File uploaded successfully');
+          // Hide loading overlay
+          overlay.style.display = "none";
+  
+          // Redirect to /options route
+          window.location.replace('/options');
+        } else {
+          console.error('File upload failed');
+          // Hide loading overlay if upload fails
+          overlay.style.display = "none";
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Hide loading overlay if upload fails
+        overlay.style.display = "none";
+      });
+    }
+  </script>
+  
+</body>
+</html>

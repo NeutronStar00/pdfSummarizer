@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Interaction</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex flex-col justify-center items-center h-screen">
+
+    <div id="response" class="max-w-3xl mx-auto mt-4 sm:mt-0">
+        <h1 class="text-3xl font-bold mb-6"><%= fileName %></h1>
+        <div id="responseContent" class="border border-gray-300 bg-white rounded-lg p-6 shadow-sm hidden">
+            <!-- Response will be dynamically added here -->
+        </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 p-4 shadow-md text-center">
+        <input id="searchInput" type="text" placeholder="Type here..." class="w-2/3 px-4 py-2 border border-gray-800 rounded-md shadow-sm focus:outline-none focus:border-blue-500 inline-block">
+        <button id="submitButton" class="px-4 py-2 ml-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500">Enter</button>
+    </div>
+    
+    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById('searchInput');
+            const submitButton = document.getElementById('submitButton');
+            const responseContent = document.getElementById('responseContent');
+            
+            // Flag to track response generation
+            let responseGenerating = false;
+
+            
+            
+            // Function to handle form submission
+            const handleSubmit = function(event) {
+                event.preventDefault();
+                const userInput = searchInput.value.trim();
+                if (userInput !== '' && !responseGenerating) {
+                    // Disable submit button
+                    submitButton.disabled = true;
+                    responseContent.classList.remove('hidden');
+                    // Grey out submit button by applying bg-gray-400 class
+                    submitButton.classList.add('bg-gray-400');
+                    
+                    // Set response generating flag to true
+                    responseGenerating = true;
+                    
+                    fetch('/pdf-interaction', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ userInput })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear previous response
+                        responseContent.innerHTML = '';
+                        // Iterate over each character in the response and display them with a delay
+                        let index = 0;
+                        const interval = setInterval(() => {
+                            if (index < data.mlResponse.length) {
+                                responseContent.innerHTML += data.mlResponse[index];
+                                index++;
+                            } else {
+                                clearInterval(interval);
+                                // Re-enable submit button
+                                submitButton.disabled = false;
+                                // Remove greyed out style by removing bg-gray-400 class
+                                submitButton.classList.remove('bg-gray-400');
+                                // Set response generating flag to false
+                                responseGenerating = false;
+                            }
+                        }, 10);
+                    })
+                    .catch(error => console.error('Error:', error));
+                    // Clear search input value
+                    searchInput.value = ''; 
+                }
+            };
+            
+            // Submit form when submit button is clicked
+            submitButton.addEventListener('click', handleSubmit);
+            
+            // Submit form when Enter key is pressed
+            searchInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    // Prevent form submission if response is generating
+                    if (!responseGenerating) {
+                        handleSubmit(event);
+                    } else {
+                        event.preventDefault();
+                    }
+                }
+            });
+        });
+    </script>
+    
+    
+    
+    
+    
+</body>
+</html>
