@@ -6,6 +6,8 @@ const uploadRouter = require('./upload');
 const path = require('path');
 const session = require('express-session'); 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+require('dotenv').config();
+
 
 
 // Initialize session middleware
@@ -68,12 +70,13 @@ router.get('/pdf-interaction', (req, res) => {
 
 async function processUserInput(userInput, pdfText) {
   try {
+    const apiKey = process.env.API_KEY;
     // Access your API key as an environment variable (see "Set up your API key" above)
-    const genAI = new GoogleGenerativeAI('AIzaSyATvd-8eyRf-MtFm5q-TgZ3gDfglNaNxyM');
+    const genAI = new GoogleGenerativeAI(apiKey);
 
     // For text-only input, use the gemini-pro model
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const prompt = `${userInput} give me the answer from this text: ${pdfText}, also make sure to stick to the this text for answering my questions also you can give extracts from the text along with small explanation of the text, don't answer in more than 300 words`;
+    const prompt = `don't answer in more than 200 words, ${userInput} give me the answer from this text: ${pdfText}, also make sure to stick to the this text for answering my questions also you can give extracts from the text along with small explanation of the text`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -116,8 +119,9 @@ router.get('/options', function(req, res, next) {
 // Function to summarize text using ML model
 async function summarizeText(text) {
   try {
+    const apiKey = process.env.API_KEY;
     // Access your API key as an environment variable (see "Set up your API key" above)
-    const genAI = new GoogleGenerativeAI('AIzaSyATvd-8eyRf-MtFm5q-TgZ3gDfglNaNxyM');
+    const genAI = new GoogleGenerativeAI(apiKey);
 
     // For text-only input, use the gemini-pro model
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
