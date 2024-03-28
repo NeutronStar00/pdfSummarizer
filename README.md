@@ -1,4 +1,6 @@
 PDF Summarizer and Interaction Web App
+
+
 The PDF Summarizer and Interaction Web App is a comprehensive solution for managing PDF documents. It simplifies the process of summarizing large PDF files, enables interactive communication with the content, and provides convenient download options for summarized data.
 
 Introduction
