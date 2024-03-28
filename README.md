@@ -1,6 +1,6 @@
 # PDF Summarizer and Interaction Web App
 
-The PDF Summarizer and Interaction Web App is a comprehensive solution for managing PDF documents. It simplifies the process of summarizing large PDF files, enables interactive communication with the content, and provides convenient download options for summarized data.
+The PDF Summarizer and Interaction Web App is a comprehensive solution for managing PDF documents. It simplifies the process of summarizing large PDF files, enables interactive communication with the content, and provides convenient download options for summarized data. You just need your own Google Gemini api key.
 
 ## Introduction
 
@@ -33,7 +33,7 @@ To set up the PDF Summarizer and Interaction Web App locally, follow these steps
 1. Clone the repository: git clone https://github.com/NeutronStar00/pdfSummarizer
 2. Navigate to the project directory: cd pdfSummarizer
 3. Install dependencies: npm install
-4. Configure environment variables, if necessary, by creating a .env file.
+4. Configure environment variables, by creating a .env file and putting your Google Gemini Api key.
 5. Start the server: npm start
 
 ## Contributing
