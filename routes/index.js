@@ -21,9 +21,13 @@ router.use('/upload', uploadRouter); // Mount the upload router
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index');
+  res.render('home');
 });
 
+router.get('/upload', function(req, res, next) {
+  const redirect = req.query.redirect;
+  res.render('index', {redirect});
+});
 // Route to render the summary EJS template
 router.get('/summary', (req, res) => {
   try {
@@ -64,8 +68,9 @@ router.get('/download/summary', (req, res) => {
 // Route to handle the request for interacting with the PDF
 router.get('/pdf-interaction', (req, res) => {
   const fileName = req.session.fileName;
+  const userInput = req.body.userInput;
   // Handle the PDF interaction logic here or redirect to the PDF interaction page
-  res.render('pdftalk', { fileName: fileName});
+  res.render('pdftalk', { fileName: fileName, userInput});
 });
 
 async function processUserInput(userInput, pdfText) {
@@ -76,7 +81,7 @@ async function processUserInput(userInput, pdfText) {
 
     // For text-only input, use the gemini-pro model
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const prompt = `don't answer in more than 200 words, ${userInput} give me the answer from this text: ${pdfText}, also make sure to stick to the this text for answering my questions also you can give extracts from the text along with small explanation of the text`;
+    const prompt = `Always answer in less than 200 words and never ever exceed the word limit, ${userInput} give me the answer from this text: ${pdfText}, also make sure to stick to the this text for answering my questions also you can give extracts from the text along with small explanation of the text`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -108,60 +113,8 @@ router.post('/pdf-interaction', async (req, res) => {
 });
 
 
-// Route handler for rendering the options page
-router.get('/options', function(req, res, next) {
-  // Get the PDF text from somewhere (e.g., req.session.pdfText)
-  const pdfText = req.session.pdfText;
-  // Render the options page and pass the PDF text as a variable
-  res.render('options', { pdfText: pdfText });
-});
-
-// Function to summarize text using ML model
-async function summarizeText(text) {
-  try {
-    const apiKey = process.env.API_KEY;
-    // Access your API key as an environment variable (see "Set up your API key" above)
-    const genAI = new GoogleGenerativeAI(apiKey);
-
-    // For text-only input, use the gemini-pro model
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-    const prompt = `Generate a concise summary of the provided document, ensuring that all essential information is captured within 1000 words. text: ${text}.`; 
 
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const summarizedText = await response.text();
-    const finalResponse = summarizedText.replace(/\*\*/g, '');
-
-    // Write summarized text to a file
-    const summaryFilePath = `uploads/summary.txt`;
-    fs.writeFileSync(summaryFilePath, finalResponse);
-
-    return summaryFilePath;
-  } catch (error) {
-    console.error('Error summarizing text:', error);
-    throw error; // Propagate the error
-  }
-}
-
-// Handle POST request to summarize PDF text
-router.post('/options/summarize-pdf', async (req, res) => {
-  try {
-    const pdfText = req.body.pdfText; // Retrieve PDF text from the form data
-
-    // Pass the extracted text to your ML model for summarization
-    const summaryFilePath = await summarizeText(pdfText);
-
-    // Redirect user to the /summary route
-    console.log('Redirecting to /summary...');
-    res.redirect('/summary');
-    console.log('Redirected successfully.');
-  } catch (error) {
-    console.error('Error summarizing PDF text:', error);
-    res.status(500).send('Error summarizing PDF text.');
-  }
-});
 
 
 module.exports = router;

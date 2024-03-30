@@ -46,14 +46,45 @@ router.post('/', upload.single('pdfFile'), async (req, res) => {
     req.session.pdfText = pdfText;
     req.session.fileName = originalFilename;
 
-    // Redirect user to the /options route
-    res.redirect(`/options?originalFilename=${originalFilename}`);
+    // Pass the extracted text to your ML model
+    const prediction = await summarizeText(pdfText);
+    console.log(prediction);
+
+    // Do something with the prediction (e.g., send it as a response)
+    res.status(200).json({ prediction });
   } catch (error) {
     console.error('Error processing PDF:', error);
     res.status(500).send('Error processing PDF.');
   }
 });
 
+// Function to summarize text using ML model
+async function summarizeText(text) {
+  try {
+    const apiKey = process.env.API_KEY;
+    // Access your API key as an environment variable (see "Set up your API key" above)
+    const genAI = new GoogleGenerativeAI(apiKey);
 
+    // For text-only input, use the gemini-pro model
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+    const prompt = `Generate a concise summary of the provided document, ensuring that all essential information is captured within 1000 words. text: ${text}.`; 
+
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const summarizedText = await response.text();
+    const finalResponse = summarizedText.replace(/\*\*/g, '');
+
+    // Write summarized text to a file
+    const summaryFilePath = `uploads/summary.txt`;
+    fs.writeFileSync(summaryFilePath, finalResponse);
+
+    return summaryFilePath;
+  } catch (error) {
+    console.error('Error summarizing text:', error);
+    throw error; // Propagate the error
+  }
+}
 
 module.exports = router;

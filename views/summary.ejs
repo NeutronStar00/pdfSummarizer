@@ -4,12 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Summary</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .logo {
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body class="bg-gray-100">
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-semibold text-center mb-6">Summary</h1>
-    <div class="bg-white rounded-lg shadow-md p-6">
+  <!-- Logo and Refresh Button -->
+  <div class="flex justify-between items-center px-4 py-3 ">
+    <!-- Logo with Refresh Functionality -->
+    <a href="/" class="logo"><i class="ri-file-pdf-2-fill text-4xl"></i></a>
+    <!-- Summary Heading -->
+    <h1 class="text-4xl font-semibold font-mono">Summary</h1>
+    <!-- Empty Space for Alignment -->
+    <div></div>
+  </div>
+
+  <!-- Summary Content -->
+  <div class="container mx-auto px-4 py-2">
+    <div class="bg-white rounded-lg shadow-md p-6 mt-6">
       <!-- Display summary text here -->
       <pre class="whitespace-pre-wrap"><%= summary %></pre>
     </div>
@@ -20,5 +36,25 @@
       </a>
     </div>
   </div>
+
+  <!-- JavaScript for Refreshing Session -->
+  <script>
+    document.querySelector('.logo').addEventListener('click', function() {
+      // Refresh the session
+      fetch('/refresh-session', { method: 'POST' })
+      .then(response => {
+        if (response.ok) {
+          console.log('Session refreshed successfully');
+          // Reload the page to reflect changes
+          window.location.reload();
+        } else {
+          console.error('Session refresh failed');
+        }
+      })
+      .catch(error => {
+        console.error('Error refreshing session:', error);
+      });
+    });
+  </script>
 </body>
 </html>

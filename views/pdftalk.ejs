@@ -4,35 +4,84 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PDF Interaction</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Loader animation */
+    @keyframes loader {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: loader 1s linear infinite;
+      display: none; /* Initially hidden */
+    }
+    /* Adjustments for mobile view */
+    @media (max-width: 640px) {
+      .top-3 {
+        top: 3rem; /* Adjust top position */
+      }
+      .max-w-3xl {
+        max-width: calc(100% - 2rem); /* Adjust max width */
+      }
+    }
+  </style>
 </head>
-<body class="bg-gray-100 flex flex-col justify-center items-center h-screen">
+<body class="bg-gray-100 flex flex-col justify-center items-center relative overflow-y-auto">
 
-    <div id="response" class="max-w-3xl mx-auto mt-4 sm:mt-0">
-        <h1 class="text-3xl font-bold mb-6"><%= fileName %></h1>
+    <!-- Logo with Refresh Functionality -->
+    <a href="/" class="absolute top-4 left-4 cursor-pointer"><i class="ri-file-pdf-2-fill text-4xl text-black"></i></a>
+
+    <!-- File Name at the Top -->
+    <h1 class="text-2xl font-semibold mb-8 top-3 left-1/2 transform -translate-x-1/2 text-center w-full max-w-md px-4 absolute">
+        <%= fileName %>
+    </h1>
+    
+
+    <div id="response" class="max-w-3xl mx-auto mt-40 overflow-y-auto">
+        <!-- Response Section -->
+        <div id="question" class="mb-4 hidden"> <!-- Initially hidden -->
+            <h2 class="text-lg font-bold">Q:</h2>
+            <p id="userQuestion" class="font-semibold text-black text-lg ml-6 -mt-7"></p>
+        </div>
         <div id="responseContent" class="border border-gray-300 bg-white rounded-lg p-6 shadow-sm hidden">
             <!-- Response will be dynamically added here -->
         </div>
+        <div class="h-36">
+        </div>
     </div>
+    
 
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 p-4 shadow-md text-center">
-        <input id="searchInput" type="text" placeholder="Type here..." class="w-2/3 px-4 py-2 border border-gray-800 rounded-md shadow-sm focus:outline-none focus:border-blue-500 inline-block">
+    <!-- Input Section -->
+    <div class="bottom-0 bg-white border-t border-gray-300 p-4 w-full shadow-md text-center fixed">
+        <input id="searchInput" type="text" placeholder="Type here..." class="w-1/2 px-4 py-2 border border-gray-800 rounded-md shadow-sm focus:outline-none focus:border-blue-500 inline-block">
+        <!-- Loader Animation -->
+        <div id="loader" class="loader ml-2"></div>
         <button id="submitButton" class="px-4 py-2 ml-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500">Enter</button>
     </div>
     
-    
-
+    <!-- Script Section -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const searchInput = document.getElementById('searchInput');
             const submitButton = document.getElementById('submitButton');
             const responseContent = document.getElementById('responseContent');
+            const question = document.getElementById('question');
+            const userQuestion = document.getElementById('userQuestion');
+            const loader = document.getElementById('loader');
             
             // Flag to track response generation
             let responseGenerating = false;
 
-            
-            
             // Function to handle form submission
             const handleSubmit = function(event) {
                 event.preventDefault();
@@ -40,6 +89,7 @@
                 if (userInput !== '' && !responseGenerating) {
                     // Disable submit button
                     submitButton.disabled = true;
+                    loader.style.display = 'inline-block'; // Show loader animation
                     responseContent.classList.remove('hidden');
                     // Grey out submit button by applying bg-gray-400 class
                     submitButton.classList.add('bg-gray-400');
@@ -58,6 +108,9 @@
                     .then(data => {
                         // Clear previous response
                         responseContent.innerHTML = '';
+                        // Display question
+                        userQuestion.textContent = userInput;
+                        question.classList.remove('hidden');
                         // Iterate over each character in the response and display them with a delay
                         let index = 0;
                         const interval = setInterval(() => {
@@ -72,6 +125,7 @@
                                 submitButton.classList.remove('bg-gray-400');
                                 // Set response generating flag to false
                                 responseGenerating = false;
+                                loader.style.display = 'none'; // Hide loader animation
                             }
                         }, 10);
                     })
@@ -97,10 +151,5 @@
             });
         });
     </script>
-    
-    
-    
-    
-    
 </body>
 </html>
