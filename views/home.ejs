@@ -26,10 +26,10 @@
       <a href="/upload?redirect=summary" class="text-white px-4 py-2 rounded-md hover:text-gray-700">Get Summary</a>
       <a href="/upload?redirect=pdf-interaction" class="text-white px-4 py-2 rounded-md hover:text-gray-700">Talk to PDF</a>
     </div>
-    <div class="flex space-x-4">
+    <div class="flex space-x-4 hidden md:block">
       <!-- Sign up / Log in buttons -->
-      <button class="bg-white text-blue-500 px-4 py-2 rounded-md mr-4 hover:text-gray-700 hover:bg-green-300">Sign Up</button>
-      <button class="bg-white text-blue-500 px-4 py-2 rounded-md hover:text-gray-700 hover:bg-green-300">Log In</button>
+      <a href="/"><button class="bg-white text-blue-500 px-4 py-2 rounded-md mr-4 hover:text-gray-700 hover:bg-green-300">Sign Up</button></a>
+      <a href="/"><button class="bg-white text-blue-500 px-4 py-2 rounded-md hover:text-gray-700 hover:bg-green-300">Log In</button></a>
     </div>
     <!-- Hamburger Icon for Mobile -->
     <div class="md:hidden">
@@ -40,10 +40,13 @@
   </nav>
 
   <!-- Mobile Navigation Menu -->
-  <div id="mobile-menu" class="md:hidden bg-blue-500 text-white py-2 px-4 space-y-2 hidden">
-    <a href="/upload?redirect=summary" class="block hover:bg-blue-600 py-2 px-4 rounded">Get Summary</a>
-    <a href="/upload?redirect=pdf-interaction" class="block hover:bg-blue-600 py-2 px-4 rounded">Talk to PDF</a>
-  </div>
+<div id="mobile-menu" class="md:hidden bg-blue-500 text-white py-2 px-4 space-y-2 hidden">
+  <a href="/upload?redirect=summary" class="block hover:bg-blue-600 py-2 px-4 rounded">Get Summary</a>
+  <a href="/upload?redirect=pdf-interaction" class="block hover:bg-blue-600 py-2 px-4 rounded">Talk to PDF</a>
+  <!-- Sign up and Log in buttons -->
+  <a href="/" class="block hover:bg-blue-600 py-2 px-4 rounded">Sign Up</a>
+  <a href="/" class="block hover:bg-blue-600 py-2 px-4 rounded">Log In<Inp></Inp></a>
+</div>
 
   <!-- Main Content -->
   <div class="container mx-auto mt-16">
