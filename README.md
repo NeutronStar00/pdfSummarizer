@@ -1,5 +1,7 @@
 # PDF Summarizer and Interaction Web App
 
+[![Deployment](https://img.shields.io/badge/Deployment-View%20Here-blue?style=for-the-badge&logo=github)](https://pdfsummarizer-7fa7.onrender.com/)
+
 The PDF Summarizer and Interaction Web App is a comprehensive solution for managing PDF documents. It simplifies the process of summarizing large PDF files, enables interactive communication with the content, and provides convenient download options for summarized data. You just need your own Google Gemini api key.
 
 ## Introduction
