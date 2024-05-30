@@ -80,7 +80,7 @@ async function processUserInput(userInput, pdfText) {
     const genAI = new GoogleGenerativeAI(apiKey);
 
     // For text-only input, use the gemini-pro model
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
     const prompt = `Always answer in less than 200 words and never ever exceed the word limit, ${userInput} give me the answer from this text: ${pdfText}, also make sure to stick to the this text for answering my questions also you can give extracts from the text along with small explanation of the text`;
 
     const result = await model.generateContent(prompt);
