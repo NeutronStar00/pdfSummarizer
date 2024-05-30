@@ -66,7 +66,7 @@ async function summarizeText(text) {
     const genAI = new GoogleGenerativeAI(apiKey);
 
     // For text-only input, use the gemini-pro model
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
     const prompt = `Generate a concise summary of the provided document, ensuring that all essential information is captured within 1000 words. text: ${text}.`; 
 
